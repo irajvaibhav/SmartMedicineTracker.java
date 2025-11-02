@@ -1,13 +1,20 @@
-# IntelliJ IDEA
+# IntelliJ IDEA and IDE files
 .idea/
 *.iml
-
-# Java compiled output
 /out/
 
-# User-generated data files
+# Java compiled output
+*.class
+
+# Data files (Do not upload private user or patient data)
 *.dat
 
-# Generated web files (these are built by the app, not part of the source)
-*.html
+# Generated web files
+# We ignore these because the Java app builds them.
+# We DO NOT ignore login.html, which is a source file.
+medicines.html
+patient_details_*.html
 users.json
+
+# Log files or other runtime files
+*.log
