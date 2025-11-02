@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Smart Medicine Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#f4f7fb;--card:#fff;--text:#0f172a;--muted:#64748b;--gradient:linear-gradient(90deg, #667eea, #764ba2);}
+        body{margin:0;padding:20px;background-color:var(--bg);font-family:'Poppins',sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;}
+        .login-container{width:100%;max-width:400px;}
+        .login-box{background-color:var(--card);padding:30px;border-radius:16px;box-shadow:0 10px 40px rgba(2,6,23,0.08);text-align:center;}
+        .title{font-size:1.8rem;font-weight:700;margin-bottom:25px;background:var(--gradient);-webkit-background-clip:text;color:transparent;}
+        .input-group {margin-bottom:20px;text-align:left;}
+        .input-group label{display:block;margin-bottom:8px;font-weight:600;color:var(--muted);}
+        .input-group input{width:100%;padding:12px 15px;border:1px solid #e2e8f0;border-radius:8px;font-size:1rem;box-sizing:border-box;}
+        .btn{width:100%;padding:12px;border-radius:8px;border:none;background:var(--gradient);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;}
+        .guest-login a{color:var(--muted);text-decoration:none;font-weight:500;margin-top:20px;display:inline-block;}
+        .error-message{color:#ef4444;font-weight:600;margin-top:15px;display:none;}
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="login-box">
+        <h2 class="title">Smart Medicine Tracker</h2>
+        <form onsubmit="event.preventDefault(); handleLogin();">
+            <div class="input-group">
+                <label for="email">Email ID</label>
+                <input type="email" id="email" placeholder="you@example.com" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <p id="errorMessage" class="error-message">Invalid email or password.</p>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <div class="guest-login">
+            <a href="#" onclick="event.preventDefault(); handleGuestLogin();">Continue as a Guest</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function handleLogin() {
+        const email = document.getElementById('email').value.toLowerCase();
+        const password = document.getElementById('password').value;
+        const errorMessage = document.getElementById('errorMessage');
+        errorMessage.style.display = 'none';
+
+        try {
+            const response = await fetch('users.json');
+            const users = await response.json();
+            const passwordHash = await sha256(password);
+
+            if (users[email] && users[email] === passwordHash) {
+                sessionStorage.setItem('loggedInUser', email);
+                window.location.href = 'medicines.html';
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        } catch (error) {
+            errorMessage.textContent = 'Login system error. Check console.';
+            errorMessage.style.display = 'block';
+        }
+    }
+
+    function handleGuestLogin() {
+        sessionStorage.setItem('loggedInUser', 'guest');
+        window.location.href = 'medicines.html';
+    }
+</script>
+</body>
+</html>
