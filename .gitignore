@@ -1,0 +1,13 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Java compiled output
+/out/
+
+# User-generated data files
+*.dat
+
+# Generated web files (these are built by the app, not part of the source)
+*.html
+users.json
